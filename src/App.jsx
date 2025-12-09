@@ -187,13 +187,14 @@ const ContactPage = () => {
     setStatus('sending');
     
     // Usamos las variables de entorno de Vite.
-    // En `npm run dev`, usará VITE_WEBHOOK_URL.
-    // En `npm run build`, priorizará VITE_WEBHOOK_URL_PROD si existe.
-    const WEBHOOK_URL = import.meta.env.VITE_WEBHOOK_URL_PROD || import.meta.env.VITE_WEBHOOK_URL;
+    // `import.meta.env.PROD` es `true` cuando ejecutas `npm run build`.
+    const WEBHOOK_URL = import.meta.env.PROD
+      ? import.meta.env.VITE_WEBHOOK_URL_PROD
+      : import.meta.env.VITE_WEBHOOK_URL;
 
     try {
       if (!WEBHOOK_URL) {
-        throw new Error("La URL del webhook no está configurada.");
+        throw new Error("La URL del webhook no está configurada en las variables de entorno.");
       }
 
       await fetch(WEBHOOK_URL, { 
