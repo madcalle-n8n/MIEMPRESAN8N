@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircle2, Send } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 
@@ -9,6 +9,7 @@ const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL;
 
 const ContactPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const initialMessage = location.state?.message || '';
     const [formData, setFormData] = useState({ name: '', email: '', message: initialMessage });
     const [status, setStatus] = useState('idle');
@@ -28,6 +29,11 @@ const ContactPage = () => {
 
             setStatus('success');
             setFormData({ name: '', email: '', message: '' });
+
+            // Redirigir al inicio después de 2 segundos
+            setTimeout(() => {
+                navigate('/');
+            }, 2000);
         } catch (error) {
             console.error(error);
             setStatus('idle');
