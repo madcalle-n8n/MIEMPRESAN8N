@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://n8niadustria.com/sitemap.xml
+Sitemap: https://miempresan-8-n.vercel.app/sitemap.xml

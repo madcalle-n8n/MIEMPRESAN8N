@@ -17,8 +17,8 @@ const SEO = ({ title, description, type = 'website', name = 'N8NIADUSTRIA' }) =>
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
         "name": "N8NIADUSTRIA",
-        "url": "https://n8niadustria.com",
-        "logo": "https://n8niadustria.com/logo.png",
+        "url": "https://miempresan-8-n.vercel.app",
+        "logo": "https://miempresan-8-n.vercel.app/logo.png",
         "description": "Agencia de desarrollo web, automatización n8n e Inteligencia Artificial.",
         "address": {
             "@type": "PostalAddress",
