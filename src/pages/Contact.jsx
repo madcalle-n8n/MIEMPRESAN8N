@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import { CheckCircle2, Send } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
 
@@ -7,7 +8,9 @@ import AnimatedPage from '../components/AnimatedPage';
 const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL;
 
 const ContactPage = () => {
-    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const location = useLocation();
+    const initialMessage = location.state?.message || '';
+    const [formData, setFormData] = useState({ name: '', email: '', message: initialMessage });
     const [status, setStatus] = useState('idle');
 
     const handleSubmit = async (e) => {

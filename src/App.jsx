@@ -10,6 +10,7 @@ import AIChatWidget from './components/AIChatWidget';
 // Pages
 import Home from './pages/Home';
 import ServicesPage from './pages/Services';
+import ServiceDetail from './pages/ServiceDetail';
 import ContactPage from './pages/Contact';
 import AboutPage from './pages/About';
 
@@ -25,6 +26,7 @@ const AppContent = () => {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/servicios" element={<ServicesPage />} />
+          <Route path="/servicios/:id" element={<ServiceDetail />} />
           <Route path="/contacto" element={<ContactPage />} />
           <Route path="/nosotros" element={<AboutPage />} />
         </Routes>
