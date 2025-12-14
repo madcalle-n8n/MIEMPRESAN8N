@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://n8niadustria.com/sitemap.xml

@@ -1,6 +1,7 @@
 
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Components
 import Navbar from './components/Navbar';
@@ -41,9 +42,11 @@ const AppContent = () => {
 };
 
 const App = () => (
-  <Router>
-    <AppContent />
-  </Router>
+  <HelmetProvider>
+    <Router>
+      <AppContent />
+    </Router>
+  </HelmetProvider>
 );
 
 export default App;

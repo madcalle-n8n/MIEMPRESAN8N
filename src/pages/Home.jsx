@@ -3,9 +3,14 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import AnimatedPage from '../components/AnimatedPage';
+import SEO from '../components/SEO';
 
 const Home = () => (
-    <AnimatedPage title="Inicio">
+    <AnimatedPage>
+        <SEO
+            title="Inicio"
+            description="Agencia experta en Automatización n8n, Agentes IA y Desarrollo Web Full Stack. Escala tu negocio hoy."
+        />
         <div className="pt-20">
             <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
                 <motion.div
