@@ -2,7 +2,7 @@
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle, Zap } from 'lucide-react';
-import AnimatedPage from '../components/AnimatedPage';
+import AnimatedPage from '../components/layout/AnimatedPage';
 import { servicesData } from '../data/services';
 
 const ServiceDetail = () => {

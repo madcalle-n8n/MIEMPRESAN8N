@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CheckCircle2, Send } from 'lucide-react';
-import AnimatedPage from '../components/AnimatedPage';
+import AnimatedPage from '../components/layout/AnimatedPage';
 
 // URL para el formulario de contacto (Desde variables de entorno)
 const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL;

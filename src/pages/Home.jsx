@@ -2,8 +2,10 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
-import AnimatedPage from '../components/AnimatedPage';
+import AnimatedPage from '../components/layout/AnimatedPage';
 import SEO from '../components/SEO';
+import TrustSection from '../components/TrustSection';
+import CaseStudies from '../components/CaseStudies';
 
 const Home = () => (
     <AnimatedPage>
@@ -54,7 +56,7 @@ const Home = () => (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
                         className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-10"
                     >
                         <Link to="/servicios" className="px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full text-white font-bold hover:shadow-lg hover:shadow-blue-500/20 transition-all flex items-center gap-2 transform hover:scale-105">
@@ -66,6 +68,9 @@ const Home = () => (
                     </motion.div>
                 </div>
             </section>
+
+            <TrustSection />
+            <CaseStudies />
         </div>
     </AnimatedPage>
 );

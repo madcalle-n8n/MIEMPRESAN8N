@@ -1,7 +1,7 @@
 
 import { motion } from 'framer-motion';
 import { Users, Target, ShieldCheck, Zap } from 'lucide-react';
-import AnimatedPage from '../components/AnimatedPage';
+import AnimatedPage from '../components/layout/AnimatedPage';
 
 const AboutPage = () => (
     <AnimatedPage title="Nosotros">
