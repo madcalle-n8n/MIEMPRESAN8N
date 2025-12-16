@@ -31,6 +31,19 @@ const ContactPage = () => {
             return;
         }
 
+        // 🛡️ Validación Estricta (Server-side simulation)
+        if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+            addToast("Por favor, completa todos los campos obligatorios.", "error");
+            return;
+        }
+
+        // Validación básica de formato de email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email.trim())) {
+            addToast("Por favor, ingresa un correo electrónico válido.", "error");
+            return;
+        }
+
         setStatus('sending');
 
         try {
@@ -40,9 +53,9 @@ const ContactPage = () => {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    message: formData.message,
+                    name: formData.name.trim(),
+                    email: formData.email.trim(),
+                    message: formData.message.trim(),
                     source: 'Contact Page Web'
                 })
             });
