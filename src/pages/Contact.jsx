@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { CheckCircle2, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import AnimatedPage from '../components/layout/AnimatedPage';
+import { useToast } from '../components/ui/Toast';
 
 // URL para el formulario de contacto (Desde variables de entorno)
 const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL;
@@ -10,12 +11,26 @@ const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL;
 const ContactPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { addToast } = useToast();
+
     const initialMessage = location.state?.message || '';
-    const [formData, setFormData] = useState({ name: '', email: '', message: initialMessage });
+    const [formData, setFormData] = useState({ name: '', email: '', message: initialMessage, _gotcha: '' });
     const [status, setStatus] = useState('idle');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // 🛡️ Honeypot Protection
+        if (formData._gotcha) {
+            // Si el campo oculto tiene valor, es un bot. Simulamos éxito.
+            setStatus('success');
+            setTimeout(() => {
+                navigate('/');
+                addToast("Mensaje enviado con éxito", "success");
+            }, 1000);
+            return;
+        }
+
         setStatus('sending');
 
         try {
@@ -24,11 +39,17 @@ const ContactPage = () => {
             await fetch(CONTACT_WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...formData, source: 'Contact Page Web' })
+                body: JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    message: formData.message,
+                    source: 'Contact Page Web'
+                })
             });
 
             setStatus('success');
-            setFormData({ name: '', email: '', message: '' });
+            setFormData({ name: '', email: '', message: '', _gotcha: '' });
+            addToast("¡Tu mensaje ha sido enviado correctamente!", "success");
 
             // Redirigir al inicio después de 2 segundos
             setTimeout(() => {
@@ -37,7 +58,7 @@ const ContactPage = () => {
         } catch (error) {
             console.error(error);
             setStatus('idle');
-            alert("Error al conectar. Verifica tu configuración.");
+            addToast("Error al conectar. Verifica tu internet o intenta más tarde.", "error");
         }
     };
 
@@ -56,6 +77,18 @@ const ContactPage = () => {
                         <p className="text-slate-400 text-center mb-8">Cuéntanos qué necesitas automatizar.</p>
 
                         <form onSubmit={handleSubmit} className="space-y-5">
+                            {/* 🍯 Honeypot Hidden Field */}
+                            <div className="hidden" aria-hidden="true">
+                                <input
+                                    type="text"
+                                    name="_gotcha"
+                                    tabIndex="-1"
+                                    autoComplete="off"
+                                    value={formData._gotcha}
+                                    onChange={e => setFormData({ ...formData, _gotcha: e.target.value })}
+                                />
+                            </div>
+
                             <div>
                                 <label className="text-sm text-slate-300 ml-1">Nombre</label>
                                 <input
@@ -93,7 +126,7 @@ const ContactPage = () => {
                 `}
                             >
                                 {status === 'success' ? (
-                                    <span className="flex items-center justify-center gap-2"><CheckCircle2 /> ¡Mensaje Enviado!</span>
+                                    '¡Mensaje Enviado!'
                                 ) : status === 'sending' ? (
                                     'Enviando...'
                                 ) : (
