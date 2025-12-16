@@ -58,9 +58,9 @@ const AIChatWidget = () => {
                 body: JSON.stringify({
                     message: userMsg.text,
                     sessionId: 'session-' + Math.random().toString(36).substr(2, 9), // ID simple para memoria
-                    timestamp: new Date().toISOString(),
-                    localTime: new Date().toLocaleTimeString(),
-                    localDate: new Date().toLocaleDateString(),
+                    timestamp: new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' }),
+                    localTime: new Date().toLocaleTimeString('es-ES', { timeZone: 'Europe/Madrid' }),
+                    localDate: new Date().toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' }),
                     fullTime: new Date().toString()
                 })
             });

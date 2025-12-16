@@ -49,6 +49,9 @@ const ContactPage = () => {
         try {
             if (!CONTACT_WEBHOOK_URL) throw new Error("Falta Webhook URL");
 
+            // Generar fecha en hora de Madrid
+            const madridDate = new Date().toLocaleString('es-ES', { timeZone: 'Europe/Madrid' });
+
             await fetch(CONTACT_WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -56,6 +59,7 @@ const ContactPage = () => {
                     name: formData.name.trim(),
                     email: formData.email.trim(),
                     message: formData.message.trim(),
+                    timestamp: madridDate,
                     source: 'Contact Page Web'
                 })
             });
