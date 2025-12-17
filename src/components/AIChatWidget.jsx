@@ -132,7 +132,7 @@ const AIChatWidget = () => {
                                     </div>
                                 </div>
                             </div>
-                            <button onClick={toggleChat} className="text-white/80 hover:text-white transition-colors">
+                            <button onClick={toggleChat} className="text-white/80 hover:text-white transition-colors" aria-label="Cerrar chat">
                                 <X size={20} />
                             </button>
                         </div>
@@ -171,11 +171,13 @@ const AIChatWidget = () => {
                                     onChange={(e) => setInputValue(e.target.value)}
                                     placeholder="Pregúntame sobre automatización..."
                                     className="w-full bg-slate-800 text-white rounded-xl pl-4 pr-10 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 border border-white/5"
+                                    aria-label="Escribe tu mensaje para el asistente"
                                 />
                                 <button
                                     type="submit"
                                     disabled={isTyping}
                                     className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-400 hover:text-blue-300 transition-colors disabled:opacity-50"
+                                    aria-label="Enviar mensaje"
                                 >
                                     <Send size={18} />
                                 </button>
@@ -195,6 +197,7 @@ const AIChatWidget = () => {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="w-14 h-14 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center shadow-lg shadow-purple-500/30 text-white relative group"
+                aria-label={isOpen ? 'Cerrar asistente Nova' : 'Abrir asistente Nova'}
             >
                 {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
                 {!isOpen && (
