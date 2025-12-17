@@ -29,14 +29,19 @@ const Navbar = () => {
                     </span>
                 </Link>
 
+                {/* Mapeo explícito de rutas a labels */}
                 <div className="hidden md:flex items-center gap-2">
-                    {['/', '/servicios', '/nosotros'].map((path) => (
+                    {[
+                        { path: '/', label: 'Inicio' },
+                        { path: '/servicios', label: 'Servicios' },
+                        { path: '/nosotros', label: 'Nosotros' }
+                    ].map(({ path, label }) => (
                         <Link
                             key={path}
                             to={path}
                             className={`px-4 py-2 rounded-full transition-all text-sm font-medium ${isActive(path)}`}
                         >
-                            {path === '/' ? 'Inicio' : path.replace('/', '').charAt(0).toUpperCase() + path.slice(2)}
+                            {label}
                         </Link>
                     ))}
                     <Link
@@ -69,7 +74,7 @@ const Navbar = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </nav>
+        </nav >
     );
 };
 
