@@ -1,5 +1,5 @@
 
-import { Globe, Workflow, Bot, Layout } from 'lucide-react';
+import { Globe, Workflow, Bot, Layout, Users } from 'lucide-react';
 
 export const servicesData = [
     {
@@ -84,6 +84,27 @@ export const servicesData = [
             'Uptime garantizado del 99.9%.',
             'Seguridad de grado empresarial.',
             'Costos predecibles y optimizados.'
+        ]
+    },
+    {
+        id: 'crm-simple',
+        title: 'Gestión de Clientes (CRM)',
+        icon: Users,
+        color: "text-orange-400",
+        bg: "bg-orange-500/20",
+        shortDesc: 'Registro de clientes, seguimiento y comunicación automatizada.',
+        fullDesc: 'Centraliza toda la información de tus clientes en un solo lugar. Nuestro CRM simple te permite gestionar contactos, historial de compras y comunicaciones de forma eficiente sin la complejidad de los CRM tradicionales.',
+        features: [
+            'Registro completo de clientes con datos de contacto, empresa y notas personalizadas.',
+            'Historial de compras y transacciones por cliente con exportación a Excel.',
+            'Recordatorios automáticos de seguimiento, renovaciones y fechas importantes.',
+            'Envío de mensajes personalizados vía Email y WhatsApp integrado.',
+            'Dashboard con métricas de clientes, ventas y rendimiento del equipo.'
+        ],
+        benefits: [
+            'Nunca pierdas una oportunidad de venta.',
+            'Mejora la retención de clientes hasta un 40%.',
+            'Comunicación personalizada y oportuna.'
         ]
     }
 ];
