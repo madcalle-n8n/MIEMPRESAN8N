@@ -23,6 +23,7 @@ const AboutPage = lazy(() => import('./pages/About'));
 const PrivacyPolicy = lazy(() => import('./pages/Privacy'));
 const TermsOfService = lazy(() => import('./pages/Terms'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const CRMDashboard = lazy(() => import('./pages/CRMDashboard'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -50,6 +51,7 @@ const AppContent = () => {
             <Route path="/servicios" element={<ServicesPage />} />
             <Route path="/servicios/:id" element={<ServiceDetail />} />
             <Route path="/contacto" element={<ContactPage />} />
+            <Route path="/crm" element={<CRMDashboard />} />
             <Route path="/nosotros" element={<AboutPage />} />
 
             {/* Legal Pages */}

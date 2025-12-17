@@ -1,7 +1,7 @@
 
 import { useParams, Link, Navigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CheckCircle, Zap } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Zap, Play } from 'lucide-react';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { servicesData } from '../data/services';
 
@@ -66,8 +66,7 @@ const ServiceDetail = () => {
                                     </li>
                                 ))}
                             </ul>
-
-                            <div className="mt-8 pt-6 border-t border-white/10">
+                            <div className="mt-8 pt-6 border-t border-white/10 space-y-3">
                                 <Link
                                     to="/contacto"
                                     state={{ message: `Hola, me interesa cotizar el servicio de ${service.title}. Me gustaría implementar...` }}
@@ -75,6 +74,17 @@ const ServiceDetail = () => {
                                 >
                                     Cotizar ahora
                                 </Link>
+
+                                {/* Botón de Demo solo para CRM */}
+                                {service.id === 'crm-simple' && (
+                                    <Link
+                                        to="/crm"
+                                        className="flex items-center justify-center gap-2 w-full py-3 px-6 bg-gradient-to-r from-orange-500 to-amber-500 hover:shadow-lg hover:shadow-orange-500/20 text-white rounded-xl font-medium transition-all"
+                                    >
+                                        <Play className="w-4 h-4" />
+                                        Probar Demo Interactiva
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </div>
