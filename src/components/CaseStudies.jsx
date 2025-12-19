@@ -1,7 +1,34 @@
+/**
+ * ============================================================================
+ * 📊 COMPONENTE: CaseStudies (Casos de Éxito)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Muestra casos de éxito reales con métricas de impacto para demostrar
+ * los resultados tangibles que ha logrado la empresa.
+ * 
+ * Para agregar un nuevo caso de éxito, agrega un objeto al array 'cases':
+ * {
+ *   title: "Título del caso",
+ *   client: "Sector o tipo de cliente",
+ *   metric: "+XX%" o "-Xh" (la métrica principal),
+ *   metricLabel: "Descripción de la métrica",
+ *   desc: "Breve descripción del proyecto",
+ *   icon: IconoLucide,
+ *   color: "text-color-400",
+ *   bg: "bg-color-400/10"
+ * }
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/CaseStudies.jsx
+ * 🔗 USADO EN: Home.jsx (página principal)
+ * ============================================================================
+ */
 
 import { motion } from 'framer-motion';
 import { ArrowUpRight, BarChart3, Clock, Zap } from 'lucide-react';
 
+// Casos de éxito para mostrar en la página principal
 const cases = [
     {
         title: "Automatización de Ventas B2B",

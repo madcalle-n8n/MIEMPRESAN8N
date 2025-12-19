@@ -1,6 +1,45 @@
+/**
+ * ============================================================================
+ * 📦 DATOS: services.js (Catálogo de Servicios)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Define todos los servicios que ofrece la empresa. Estos datos se usan
+ * en la página de Servicios y en los detalles de cada servicio.
+ * 
+ * ============================================================================
+ * 📝 CÓMO AGREGAR UN NUEVO SERVICIO
+ * ============================================================================
+ * 
+ * 1. Agrega un nuevo objeto al array servicesData siguiendo esta estructura:
+ * 
+ *    {
+ *        id: 'nombre-url-amigable',  // Usado en la URL /servicios/:id
+ *        title: 'Nombre del Servicio',
+ *        icon: IconoLucide,          // Importar de lucide-react
+ *        color: 'text-color-400',    // Color del texto (Tailwind)
+ *        bg: 'bg-color-500/20',      // Color de fondo (Tailwind)
+ *        shortDesc: 'Descripción corta para tarjetas',
+ *        fullDesc: 'Descripción completa para página de detalle',
+ *        features: ['Característica 1', 'Característica 2', ...],
+ *        benefits: ['Beneficio 1', 'Beneficio 2', ...]
+ *    }
+ * 
+ * 2. Importa el icono al inicio del archivo si es nuevo
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/data/services.js
+ * 🔗 USADO EN: Services.jsx, ServiceDetail.jsx, Home.jsx
+ * ============================================================================
+ */
 
 import { Globe, Workflow, Bot, Layout, Users } from 'lucide-react';
 
+// ============================================================================
+// 📋 LISTA DE SERVICIOS
+// ============================================================================
+// Cada servicio aparece en /servicios y tiene su propia página en /servicios/:id
+// ============================================================================
 export const servicesData = [
     {
         id: 'web-full-stack',

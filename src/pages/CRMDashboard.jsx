@@ -1,3 +1,61 @@
+/**
+ * ============================================================================
+ * 📊 PÁGINA: CRMDashboard (Panel de Gestión de Clientes)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Dashboard interactivo de demostración para gestión de clientes (CRM).
+ * Permite registrar clientes, ver métricas, historial de ventas y
+ * enviar comunicaciones automatizadas vía WhatsApp y Email.
+ * 
+ * ============================================================================
+ * ⚙️ CONFIGURACIÓN DE WEBHOOKS
+ * ============================================================================
+ * 
+ * Este componente usa DOS webhooks para automatización de comunicaciones:
+ * 
+ * 📱 WEBHOOK DE WHATSAPP:
+ * Variable de entorno: VITE_WHATSAPP_WEBHOOK_URL
+ * Datos que envía:
+ * - cliente: Nombre del cliente
+ * - telefono: Número de WhatsApp
+ * - mensaje: Texto del mensaje
+ * - timestamp: Fecha/hora del envío
+ * 
+ * Sugerencia n8n: Conectar con API de WhatsApp Business, Twilio o Evolution API
+ * 
+ * ✉️ WEBHOOK DE EMAIL:
+ * Variable de entorno: VITE_EMAIL_WEBHOOK_URL
+ * Datos que envía:
+ * - cliente: Nombre del cliente
+ * - email: Dirección de email
+ * - asunto: Asunto del correo
+ * - timestamp: Fecha/hora del envío
+ * 
+ * Sugerencia n8n: Conectar con SendGrid, Mailgun, Gmail o SMTP
+ * 
+ * ============================================================================
+ * 🎮 FUNCIONALIDADES DEL DASHBOARD
+ * ============================================================================
+ * 
+ * Pestañas disponibles:
+ * - Dashboard: Métricas generales y últimos clientes
+ * - Clientes: Lista completa con búsqueda y filtros
+ * - Ventas: Historial de transacciones
+ * - Recordatorios: Tareas y seguimientos pendientes
+ * 
+ * Acciones por cliente:
+ * - Enviar Email (conecta con webhook)
+ * - Enviar WhatsApp (conecta con webhook)
+ * - Editar información
+ * - Eliminar cliente
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/pages/CRMDashboard.jsx
+ * 🔗 RUTA: /crm
+ * ============================================================================
+ */
+
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,8 +67,19 @@ import {
 import AnimatedPage from '../components/layout/AnimatedPage';
 import SEO from '../components/SEO';
 
-// URLs de webhooks desde variables de entorno
+// ============================================================================
+// 🔗 WEBHOOKS DE COMUNICACIÓN - Configura estas URLs en el archivo .env
+// ============================================================================
+// Estos webhooks permiten enviar mensajes automatizados desde el CRM.
+// Si no están configurados, el sistema mostrará un mensaje de demo.
+// ============================================================================
+
+// 📱 Webhook de WhatsApp - Para enviar mensajes a clientes
+// En n8n: Conectar con Evolution API, Twilio, o WhatsApp Business API
 const WHATSAPP_WEBHOOK_URL = import.meta.env.VITE_WHATSAPP_WEBHOOK_URL;
+
+// ✉️ Webhook de Email - Para enviar correos a clientes
+// En n8n: Conectar con nodo de Email (Gmail, SMTP, SendGrid, etc.)
 const EMAIL_WEBHOOK_URL = import.meta.env.VITE_EMAIL_WEBHOOK_URL;
 
 const CRMDashboard = () => {
@@ -195,8 +264,8 @@ const CRMDashboard = () => {
                                         key={tab.id}
                                         onClick={() => setActiveTab(tab.id)}
                                         className={`flex items-center gap-2 py-3 px-4 rounded-lg font-medium text-sm whitespace-nowrap transition-all ${activeTab === tab.id
-                                                ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
-                                                : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                            ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                                            : 'text-slate-400 hover:text-white hover:bg-white/5'
                                             }`}
                                     >
                                         <Icon className="w-4 h-4" />
@@ -273,8 +342,8 @@ const CRMDashboard = () => {
                                                         </td>
                                                         <td className="px-6 py-4 whitespace-nowrap">
                                                             <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${cliente.estado === 'activo' ? 'bg-green-500/20 text-green-400 border border-green-500/30' :
-                                                                    cliente.estado === 'prospecto' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
-                                                                        'bg-slate-500/20 text-slate-400 border border-slate-500/30'
+                                                                cliente.estado === 'prospecto' ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' :
+                                                                    'bg-slate-500/20 text-slate-400 border border-slate-500/30'
                                                                 }`}>
                                                                 {cliente.estado}
                                                             </span>
@@ -367,8 +436,8 @@ const CRMDashboard = () => {
                                                     <p className="text-sm text-slate-400">{cliente.empresa}</p>
                                                 </div>
                                                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${cliente.prioridad === 'alta' ? 'bg-red-500/20 text-red-400' :
-                                                        cliente.prioridad === 'media' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                            'bg-green-500/20 text-green-400'
+                                                    cliente.prioridad === 'media' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                        'bg-green-500/20 text-green-400'
                                                     }`}>
                                                     {cliente.prioridad}
                                                 </span>
@@ -482,8 +551,8 @@ const CRMDashboard = () => {
                                         { cliente: 'Carlos López', tipo: 'Cumpleaños', fecha: '2024-12-30', descripcion: 'Enviar felicitación y oferta especial', urgente: false }
                                     ].map((recordatorio, index) => (
                                         <div key={index} className={`flex items-start p-4 rounded-xl border transition-all ${recordatorio.urgente
-                                                ? 'bg-red-500/10 border-red-500/30 hover:border-red-500/50'
-                                                : 'bg-slate-800/50 border-white/5 hover:border-white/10'
+                                            ? 'bg-red-500/10 border-red-500/30 hover:border-red-500/50'
+                                            : 'bg-slate-800/50 border-white/5 hover:border-white/10'
                                             }`}>
                                             <div className={`flex-shrink-0 p-3 rounded-xl mr-4 ${recordatorio.urgente ? 'bg-red-500/20' : 'bg-orange-500/20'
                                                 }`}>

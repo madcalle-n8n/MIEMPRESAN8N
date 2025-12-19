@@ -1,3 +1,26 @@
+/**
+ * ============================================================================
+ * 🧭 COMPONENTE: Navbar (Barra de Navegación)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Menú de navegación principal. Aparece fijo en la parte superior de
+ * todas las páginas. Incluye versión móvil con menú hamburguesa.
+ * 
+ * CARACTERÍSTICAS:
+ * - Cambia de transparente a opaco al hacer scroll
+ * - Menú responsive (desktop/móvil)
+ * - Indicador de página activa
+ * - Logo clicable que lleva al inicio
+ * 
+ * Para agregar nuevas páginas al menú, modifica el array en línea ~34
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/layout/Navbar.jsx
+ * 🔗 USADO EN: App.jsx (visible en todas las páginas)
+ * ============================================================================
+ */
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';

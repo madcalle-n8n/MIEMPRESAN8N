@@ -1,3 +1,28 @@
+/**
+ * ============================================================================
+ * 🔔 COMPONENTE: Toast (Sistema de Notificaciones)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Sistema de notificaciones flotantes (toasts) que aparecen en la esquina
+ * inferior derecha de la pantalla para feedback al usuario.
+ * 
+ * USO:
+ * 1. Importar el hook: import { useToast } from '../components/ui/Toast';
+ * 2. Obtener la función: const { addToast } = useToast();
+ * 3. Mostrar notificación: addToast("Mensaje", "success");
+ * 
+ * TIPOS DE TOAST:
+ * - "success" (verde): Operaciones exitosas
+ * - "error" (rojo): Errores o fallos
+ * - "info" (azul): Información general
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/ui/Toast.jsx
+ * 🔗 PROVEEDOR EN: App.jsx (ToastProvider)
+ * ============================================================================
+ */
+
 import { createContext, useContext, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle2, AlertCircle, Info } from 'lucide-react';

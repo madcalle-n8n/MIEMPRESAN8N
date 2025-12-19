@@ -1,3 +1,42 @@
+/**
+ * ============================================================================
+ * 📧 PÁGINA: Contact (Formulario de Contacto)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Formulario principal para que los visitantes envíen consultas sobre
+ * servicios de automatización. Los datos se envían a un webhook de n8n
+ * que puede guardarlos en una base de datos, enviar notificaciones, etc.
+ * 
+ * ============================================================================
+ * ⚙️ CONFIGURACIÓN DEL WEBHOOK
+ * ============================================================================
+ * 
+ * Variable de entorno: VITE_CONTACT_WEBHOOK_URL
+ * Archivo de configuración: .env (ver .env.example para guía)
+ * 
+ * Datos que se envían al webhook:
+ * - name: Nombre del cliente (obligatorio)
+ * - email: Email del cliente (obligatorio, validado)
+ * - message: Mensaje/consulta del cliente (obligatorio)
+ * - timestamp: Fecha/hora del envío (hora Madrid)
+ * - source: "Contact Page Web" (para identificar origen)
+ * 
+ * ============================================================================
+ * 🛡️ PROTECCIÓN ANTI-SPAM
+ * ============================================================================
+ * 
+ * Este formulario incluye protección "honeypot":
+ * - Hay un campo oculto (_gotcha) invisible para usuarios normales
+ * - Los bots automáticos suelen rellenarlo
+ * - Si tiene valor, el envío se simula como exitoso pero no se procesa
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/pages/Contact.jsx
+ * 🔗 RUTA: /contacto
+ * ============================================================================
+ */
+
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -5,7 +44,15 @@ import { Send } from 'lucide-react';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { useToast } from '../components/ui/Toast';
 
-// URL para el formulario de contacto (Desde variables de entorno)
+// ============================================================================
+// 🔗 WEBHOOK DE CONTACTO - Configura esta URL en el archivo .env
+// ============================================================================
+// Este webhook recibe los datos del formulario cuando un usuario lo envía.
+// Puedes conectarlo en n8n para:
+// - Guardar en Google Sheets, Notion, Airtable, etc.
+// - Enviar notificación por email o Slack
+// - Crear un lead en tu CRM
+// ============================================================================
 const CONTACT_WEBHOOK_URL = import.meta.env.VITE_CONTACT_WEBHOOK_URL;
 
 const ContactPage = () => {

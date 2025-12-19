@@ -1,3 +1,33 @@
+/**
+ * ============================================================================
+ * 🔍 COMPONENTE: SEO (Optimización para Buscadores)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Gestiona todos los meta tags necesarios para SEO y redes sociales.
+ * Incluye Open Graph (Facebook/WhatsApp), Twitter Cards y Schema.org.
+ * 
+ * USO:
+ * <SEO 
+ *   title="Título de la página" 
+ *   description="Descripción para buscadores"
+ * />
+ * 
+ * PROPS:
+ * - title: Título de la página (se agrega " | N8NIADUSTRIA")
+ * - description: Meta description para SEO
+ * - type: Tipo de contenido (default: 'website')
+ * - name: Nombre del sitio (default: 'N8NIADUSTRIA')
+ * 
+ * Para mejorar SEO:
+ * - Cada página debe tener title y description únicos
+ * - Las descripciones deben tener 150-160 caracteres
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/SEO.jsx
+ * 🔗 USADO EN: Todas las páginas que necesitan meta tags personalizados
+ * ============================================================================
+ */
 
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';

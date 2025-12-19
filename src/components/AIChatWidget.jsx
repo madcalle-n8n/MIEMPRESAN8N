@@ -1,7 +1,49 @@
+/**
+ * ============================================================================
+ * 🤖 COMPONENTE: AIChatWidget (Chat con IA "Nova")
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Widget de chat flotante que permite a los visitantes interactuar con un
+ * agente de IA conectado a n8n. El bot "Nova" responde consultas sobre
+ * automatización y servicios de la empresa.
+ * 
+ * ============================================================================
+ * ⚙️ CONFIGURACIÓN DEL WEBHOOK
+ * ============================================================================
+ * 
+ * Variable de entorno: VITE_CHAT_WEBHOOK_URL
+ * Archivo de configuración: .env (ver .env.example para guía)
+ * 
+ * El webhook en n8n debe:
+ * 1. Recibir un POST con los datos del mensaje
+ * 2. Procesar con un nodo de IA (OpenAI, Claude, etc.)
+ * 3. Devolver JSON con formato: { "output": "respuesta del bot" }
+ * 
+ * Datos que se envían al webhook:
+ * - message: Texto del usuario
+ * - sessionId: ID de sesión para memoria del chat
+ * - timestamp: Fecha/hora del mensaje
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/AIChatWidget.jsx
+ * 🔗 USADO EN: App.jsx (aparece en todas las páginas)
+ * ============================================================================
+ */
+
 import { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Bot, MessageSquare, Send, Sparkles, X } from 'lucide-react';
 
+// ============================================================================
+// 🔗 WEBHOOK DE CHAT - Configura esta URL en el archivo .env
+// ============================================================================
+// Para conectar con n8n:
+// 1. Crea un workflow en n8n con un nodo Webhook (POST)
+// 2. Conecta con un nodo de IA (OpenAI, Claude, etc.)
+// 3. Usa un nodo "Respond to Webhook" para devolver la respuesta
+// 4. Copia la URL del webhook aquí o en .env como VITE_CHAT_WEBHOOK_URL
+// ============================================================================
 const CHAT_WEBHOOK_URL = import.meta.env.VITE_CHAT_WEBHOOK_URL;
 
 const AIChatWidget = () => {

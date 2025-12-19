@@ -1,3 +1,17 @@
+/**
+ * ============================================================================
+ * 🦶 COMPONENTE: Footer (Pie de Página)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Pie de página que aparece en todas las páginas.
+ * Incluye logo, enlaces legales y copyright.
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/layout/Footer.jsx
+ * 🔗 USADO EN: App.jsx (visible en todas las páginas)
+ * ============================================================================
+ */
 
 import { Cpu } from 'lucide-react';
 import { Link } from 'react-router-dom';

@@ -1,20 +1,73 @@
+/**
+ * ============================================================================
+ * 🏠 ARCHIVO PRINCIPAL: App.jsx
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Este es el componente raíz de la aplicación. Define la estructura general,
+ * el sistema de rutas (navegación), y ensambla todos los proveedores y
+ * componentes globales.
+ * 
+ * ============================================================================
+ * 📁 ESTRUCTURA DE LA APLICACIÓN
+ * ============================================================================
+ * 
+ * App (Raíz)
+ * ├── ErrorBoundary (Captura errores de React)
+ * ├── HelmetProvider (SEO y meta tags)
+ * ├── ToastProvider (Notificaciones)
+ * └── Router (Navegación)
+ *     └── AppContent
+ *         ├── SecurityHead (Headers de seguridad)
+ *         ├── Navbar (Menú de navegación)
+ *         ├── Routes (Páginas según URL)
+ *         ├── Footer (Pie de página)
+ *         └── AIChatWidget (Chat flotante Nova)
+ * 
+ * ============================================================================
+ * 🔗 RUTAS DISPONIBLES
+ * ============================================================================
+ * 
+ * /              → Home (Página principal)
+ * /servicios     → Lista de servicios
+ * /servicios/:id → Detalle de un servicio específico
+ * /contacto      → Formulario de contacto
+ * /crm           → Dashboard CRM (demo)
+ * /nosotros      → Página "Sobre nosotros"
+ * /privacidad    → Política de privacidad
+ * /terminos      → Términos de servicio
+ * *              → Página 404 (no encontrado)
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/App.jsx
+ * ============================================================================
+ */
 
 import { useEffect, Suspense, lazy } from 'react';
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { HelmetProvider } from 'react-helmet-async';
 
-// Core Layout Components
+// ============================================================================
+// 🧩 COMPONENTES DE LAYOUT (Siempre visibles en todas las páginas)
+// ============================================================================
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AIChatWidget from './components/AIChatWidget';
 
-// Providers & Common
+// ============================================================================
+// 🛡️ PROVEEDORES Y COMPONENTES COMUNES
+// ============================================================================
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SecurityHead from './components/common/SecurityHead';
 import { ToastProvider } from './components/ui/Toast';
 
-// Lazy Loaded Pages
+// ============================================================================
+// 📄 PÁGINAS (Carga diferida para mejor rendimiento)
+// ============================================================================
+// Las páginas se cargan solo cuando el usuario navega a ellas
+// Esto mejora el tiempo de carga inicial de la aplicación
+// ============================================================================
 const Home = lazy(() => import('./pages/Home'));
 const ServicesPage = lazy(() => import('./pages/Services'));
 const ServiceDetail = lazy(() => import('./pages/ServiceDetail'));

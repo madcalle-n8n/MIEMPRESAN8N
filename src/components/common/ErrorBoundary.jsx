@@ -1,3 +1,25 @@
+/**
+ * ============================================================================
+ * 🛡️ COMPONENTE: ErrorBoundary (Capturador de Errores)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Captura errores de JavaScript en cualquier componente hijo y muestra
+ * una pantalla de error amigable en lugar de romper toda la aplicación.
+ * 
+ * FUNCIONAMIENTO:
+ * - Si un componente falla, muestra una pantalla con botón para recargar
+ * - En desarrollo, también muestra el error técnico para debugging
+ * - En producción, solo muestra el mensaje amigable al usuario
+ * 
+ * El error se registra en la consola para debugging.
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/common/ErrorBoundary.jsx
+ * 🔗 USADO EN: App.jsx (envuelve toda la aplicación)
+ * ============================================================================
+ */
+
 import React from 'react';
 import { AlertTriangle, RotateCcw } from 'lucide-react';
 

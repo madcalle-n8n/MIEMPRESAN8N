@@ -1,6 +1,24 @@
+/**
+ * ============================================================================
+ * 🏆 COMPONENTE: TrustSection (Sección de Confianza)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Muestra los logos/nombres de las tecnologías y partners certificados
+ * para generar confianza en los visitantes (social proof).
+ * 
+ * Para agregar más marcas, edita el array 'brands' debajo.
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/TrustSection.jsx
+ * 🔗 USADO EN: Home.jsx (página principal)
+ * ============================================================================
+ */
 
 import { motion } from 'framer-motion';
 
+// Lista de tecnologías/partners certificados
+// Para agregar una nueva: { name: "Nombre", style: "clases Tailwind" }
 const brands = [
     { name: "n8n", style: "font-mono font-bold tracking-tight" },
     { name: "AWS Amazon", style: "font-bold tracking-tight" },

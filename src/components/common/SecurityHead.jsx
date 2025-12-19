@@ -1,3 +1,24 @@
+/**
+ * ============================================================================
+ * 🔐 COMPONENTE: SecurityHead (Cabeceras de Seguridad)
+ * ============================================================================
+ * 
+ * PROPÓSITO:
+ * Agrega meta tags de seguridad HTTP al documento HTML.
+ * Estas cabeceras protegen contra ataques comunes como XSS y clickjacking.
+ * 
+ * CABECERAS INCLUIDAS:
+ * - X-Content-Type-Options: Previene MIME-type sniffing
+ * - Referrer-Policy: Controla qué info se envía al navegar
+ * - Permissions-Policy: Desactiva cámara, micrófono, geolocalización
+ * - Content-Security-Policy: Restringe orígenes de scripts y estilos
+ * 
+ * ============================================================================
+ * 📁 UBICACIÓN: src/components/common/SecurityHead.jsx
+ * 🔗 USADO EN: App.jsx (activo en todas las páginas)
+ * ============================================================================
+ */
+
 import { Helmet } from 'react-helmet-async';
 
 const SecurityHead = () => {
