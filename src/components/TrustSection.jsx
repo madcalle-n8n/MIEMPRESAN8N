@@ -20,12 +20,13 @@ import { motion } from 'framer-motion';
 // Lista de tecnologías/partners certificados
 // Para agregar una nueva: { name: "Nombre", style: "clases Tailwind" }
 const brands = [
-    { name: "n8n", style: "font-mono font-bold tracking-tight" },
-    { name: "AWS Amazon", style: "font-bold tracking-tight" },
-    { name: "Google Cloud", style: "font-semibold tracking-normal" },
-    { name: "Lovable", style: "font-bold italic" },
-    { name: "Antigravity", style: "font-extrabold tracking-wide" },
-    { name: "CloudShare", style: "font-medium" }
+    { name: "n8n", style: "font-bold" },
+    { name: "AWS Amazon", style: "font-bold" },
+    { name: "Google Cloud", style: "font-bold" },
+    { name: "Supabase", style: "font-bold" },
+    { name: "Lovable", style: "font-bold" },
+    { name: "Antigravity", style: "font-bold" },
+    { name: "CloudShare", style: "font-bold" }
 ];
 
 const TrustSection = () => {
