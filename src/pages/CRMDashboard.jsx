@@ -203,7 +203,8 @@ const CRMDashboard = () => {
         { id: 'dashboard', label: 'Dashboard', icon: TrendingUp },
         { id: 'clientes', label: 'Clientes', icon: Users },
         { id: 'ventas', label: 'Ventas', icon: DollarSign },
-        { id: 'recordatorios', label: 'Recordatorios', icon: Bell }
+        { id: 'recordatorios', label: 'Recordatorios', icon: Bell },
+        { id: 'scraper', label: 'Web Scraper IA', icon: Sparkles, isLink: true, href: '/crm/scraper' }
     ];
 
     return (
@@ -259,6 +260,22 @@ const CRMDashboard = () => {
                         <div className="flex space-x-1 overflow-x-auto py-2">
                             {tabs.map((tab) => {
                                 const Icon = tab.icon;
+
+                                // Si es un link, usar Link de react-router
+                                if (tab.isLink) {
+                                    return (
+                                        <Link
+                                            key={tab.id}
+                                            to={tab.href}
+                                            className="flex items-center gap-2 py-3 px-4 rounded-lg font-medium text-sm whitespace-nowrap transition-all bg-gradient-to-r from-purple-500/20 to-pink-500/20 text-purple-400 border border-purple-500/30 hover:from-purple-500/30 hover:to-pink-500/30"
+                                        >
+                                            <Icon className="w-4 h-4" />
+                                            {tab.label}
+                                            <span className="text-[10px] bg-purple-500/30 px-1.5 py-0.5 rounded-full">NEW</span>
+                                        </Link>
+                                    );
+                                }
+
                                 return (
                                     <button
                                         key={tab.id}

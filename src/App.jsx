@@ -16,6 +16,7 @@
  * ├── ErrorBoundary (Captura errores de React)
  * ├── HelmetProvider (SEO y meta tags)
  * ├── ToastProvider (Notificaciones)
+ * ├── AuthProvider (Autenticación global)
  * └── Router (Navegación)
  *     └── AppContent
  *         ├── SecurityHead (Headers de seguridad)
@@ -28,14 +29,22 @@
  * 🔗 RUTAS DISPONIBLES
  * ============================================================================
  * 
+ * PÚBLICAS:
  * /              → Home (Página principal)
  * /servicios     → Lista de servicios
  * /servicios/:id → Detalle de un servicio específico
  * /contacto      → Formulario de contacto
- * /crm           → Dashboard CRM (demo)
  * /nosotros      → Página "Sobre nosotros"
  * /privacidad    → Política de privacidad
  * /terminos      → Términos de servicio
+ * /login         → Iniciar sesión
+ * /register      → Crear cuenta
+ * /precios       → Planes y precios
+ * 
+ * PROTEGIDAS (requieren login):
+ * /crm           → Dashboard CRM
+ * /crm/scraper   → Servicio de Web Scraping
+ * 
  * *              → Página 404 (no encontrado)
  * 
  * ============================================================================
@@ -60,13 +69,12 @@ import AIChatWidget from './components/AIChatWidget';
 // ============================================================================
 import ErrorBoundary from './components/common/ErrorBoundary';
 import SecurityHead from './components/common/SecurityHead';
+import ProtectedRoute from './components/common/ProtectedRoute';
 import { ToastProvider } from './components/ui/Toast';
+import { AuthProvider } from './context/AuthContext';
 
 // ============================================================================
-// 📄 PÁGINAS (Carga diferida para mejor rendimiento)
-// ============================================================================
-// Las páginas se cargan solo cuando el usuario navega a ellas
-// Esto mejora el tiempo de carga inicial de la aplicación
+// 📄 PÁGINAS PÚBLICAS (Carga diferida para mejor rendimiento)
 // ============================================================================
 const Home = lazy(() => import('./pages/Home'));
 const ServicesPage = lazy(() => import('./pages/Services'));
@@ -76,7 +84,19 @@ const AboutPage = lazy(() => import('./pages/About'));
 const PrivacyPolicy = lazy(() => import('./pages/Privacy'));
 const TermsOfService = lazy(() => import('./pages/Terms'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+
+// ============================================================================
+// 🔐 PÁGINAS DE AUTENTICACIÓN
+// ============================================================================
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const PricingPage = lazy(() => import('./pages/PricingPage'));
+
+// ============================================================================
+// 🔒 PÁGINAS PROTEGIDAS (requieren autenticación)
+// ============================================================================
 const CRMDashboard = lazy(() => import('./pages/CRMDashboard'));
+const WebScraperService = lazy(() => import('./pages/WebScraperService'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -92,24 +112,44 @@ const AppContent = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
+  // Determinar si mostrar Navbar/Footer (ocultar en login/register)
+  const hideLayout = ['/login', '/register'].includes(location.pathname);
+
   return (
     <div className="bg-slate-950 min-h-screen text-slate-200 font-sans flex flex-col relative overflow-x-hidden">
       <SecurityHead />
-      <Navbar />
+      {!hideLayout && <Navbar />}
 
       <AnimatePresence mode="wait">
         <Suspense fallback={<PageLoader />}>
           <Routes location={location} key={location.pathname}>
+            {/* Rutas Públicas */}
             <Route path="/" element={<Home />} />
             <Route path="/servicios" element={<ServicesPage />} />
             <Route path="/servicios/:id" element={<ServiceDetail />} />
             <Route path="/contacto" element={<ContactPage />} />
-            <Route path="/crm" element={<CRMDashboard />} />
             <Route path="/nosotros" element={<AboutPage />} />
+            <Route path="/precios" element={<PricingPage />} />
 
-            {/* Legal Pages */}
+            {/* Rutas de Autenticación */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+
+            {/* Rutas Legales */}
             <Route path="/privacidad" element={<PrivacyPolicy />} />
             <Route path="/terminos" element={<TermsOfService />} />
+
+            {/* Rutas Protegidas (requieren login) */}
+            <Route path="/crm" element={
+              <ProtectedRoute>
+                <CRMDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/crm/scraper" element={
+              <ProtectedRoute>
+                <WebScraperService />
+              </ProtectedRoute>
+            } />
 
             {/* 404 Fallback */}
             <Route path="*" element={<NotFound />} />
@@ -117,8 +157,8 @@ const AppContent = () => {
         </Suspense>
       </AnimatePresence>
 
-      <Footer />
-      <AIChatWidget />
+      {!hideLayout && <Footer />}
+      {!hideLayout && <AIChatWidget />}
     </div>
   );
 };
@@ -127,9 +167,11 @@ const App = () => (
   <ErrorBoundary>
     <HelmetProvider>
       <ToastProvider>
-        <Router>
-          <AppContent />
-        </Router>
+        <AuthProvider>
+          <Router>
+            <AppContent />
+          </Router>
+        </AuthProvider>
       </ToastProvider>
     </HelmetProvider>
   </ErrorBoundary>
