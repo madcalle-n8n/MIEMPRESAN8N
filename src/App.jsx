@@ -97,6 +97,7 @@ const PricingPage = lazy(() => import('./pages/PricingPage'));
 // ============================================================================
 const CRMDashboard = lazy(() => import('./pages/CRMDashboard'));
 const WebScraperService = lazy(() => import('./pages/WebScraperService'));
+const TelegramCRM = lazy(() => import('./pages/TelegramCRM'));
 
 // Loading Fallback
 const PageLoader = () => (
@@ -148,6 +149,11 @@ const AppContent = () => {
             <Route path="/crm/scraper" element={
               <ProtectedRoute>
                 <WebScraperService />
+              </ProtectedRoute>
+            } />
+            <Route path="/crm/telegram" element={
+              <ProtectedRoute>
+                <TelegramCRM />
               </ProtectedRoute>
             } />
 

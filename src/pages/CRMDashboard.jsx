@@ -204,7 +204,8 @@ const CRMDashboard = () => {
         { id: 'clientes', label: 'Clientes', icon: Users },
         { id: 'ventas', label: 'Ventas', icon: DollarSign },
         { id: 'recordatorios', label: 'Recordatorios', icon: Bell },
-        { id: 'scraper', label: 'Web Scraper IA', icon: Sparkles, isLink: true, href: '/crm/scraper' }
+        { id: 'scraper', label: 'Web Scraper IA', icon: Sparkles, isLink: true, href: '/crm/scraper' },
+        { id: 'telegram', label: 'Telegram CRM', icon: MessageCircle, isLink: true, href: '/crm/telegram' }
     ];
 
     return (
