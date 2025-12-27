@@ -23,6 +23,7 @@
  * ============================================================================
  */
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 // Configuración de animación para transiciones entre páginas
@@ -39,9 +40,11 @@ const pageTransition = {
 };
 
 const AnimatedPage = ({ children, title }) => {
-    if (title) {
-        document.title = `${title} | N8NIADUSTRIA`;
-    }
+    useEffect(() => {
+        if (title) {
+            document.title = `${title} | N8NIADUSTRIA`;
+        }
+    }, [title]);
 
     return (
         <motion.div initial="initial" animate="in" exit="out" variants={pageVariants} transition={pageTransition}>
