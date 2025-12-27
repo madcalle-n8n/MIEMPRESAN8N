@@ -31,27 +31,49 @@ import {
     Play, Database, FileText, Link as LinkIcon, Activity,
     Globe, Zap, Search, Layout, FileOutput, Terminal,
     ChevronRight, Clock, ArrowRight, AlertCircle, ArrowLeft,
-    Coins, CreditCard, Sparkles
+    Coins, CreditCard, Sparkles, Trash2, Download
 } from 'lucide-react';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import SEO from '../components/SEO';
 import { useAuth } from '../context/AuthContext';
 
 // ============================================================================
-// 🔗 CONFIGURACIÓN DE WEBHOOK
+// 🔗 CONFIGURACIÓN DE WEBHOOKS
 // ============================================================================
 const SCRAPER_WEBHOOK_URL = import.meta.env.VITE_SCRAPER_WEBHOOK_URL;
+const PDF_WEBHOOK_URL = import.meta.env.VITE_PDF_WEBHOOK_URL;
+
 
 const WebScraperService = () => {
     const [urlInput, setUrlInput] = useState('');
     const [isScanning, setIsScanning] = useState(false);
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState(() => {
+        // Cargar resultados guardados de sessionStorage al iniciar
+        try {
+            const saved = sessionStorage.getItem('scraperResults');
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
     const [logs, setLogs] = useState([]);
-    const [outputFormat, setOutputFormat] = useState('dashboard');
+    const [selectedResult, setSelectedResult] = useState(null); // Para modal de reporte
+    const [showModal, setShowModal] = useState(false);
     const scrollRef = useRef(null);
 
-    const { user, updateCredits, accessToken } = useAuth();
+    const { user, updateCredits } = useAuth();
     const userCredits = user?.credits || 0;
+
+    // Guardar resultados en sessionStorage cuando cambien
+    useEffect(() => {
+        if (results.length > 0) {
+            try {
+                sessionStorage.setItem('scraperResults', JSON.stringify(results));
+            } catch (e) {
+                console.warn('No se pudo guardar en sessionStorage:', e);
+            }
+        }
+    }, [results]);
 
     // Auto-scroll logs
     useEffect(() => {
@@ -94,30 +116,78 @@ const WebScraperService = () => {
         try {
             addLog(`📡 Conectando con servidor de IA...`);
 
+            // Debug: mostrar la URL del webhook
+            console.log('🔗 Webhook URL:', SCRAPER_WEBHOOK_URL);
+            addLog(`🔗 Webhook configurado: ${SCRAPER_WEBHOOK_URL ? 'Sí' : 'No (modo demo)'}`);
+
             let data;
 
             if (SCRAPER_WEBHOOK_URL) {
+                // Log de datos a enviar
+                const requestBody = {
+                    url: urlInput,
+                    userId: user?.id,
+                    userEmail: user?.email,
+                    timestamp: new Date().toISOString()
+                };
+                console.log('📤 Enviando datos:', requestBody);
+                addLog(`📤 Enviando: ${urlInput}`);
+
                 // Conexión real con n8n
                 const response = await fetch(SCRAPER_WEBHOOK_URL, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`
+                        'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        url: urlInput,
-                        format: outputFormat,
-                        userId: user?.id,
-                        userEmail: user?.email,
-                        timestamp: new Date().toISOString()
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
+                console.log('📥 Response status:', response.status);
+                addLog(`📥 Respuesta: HTTP ${response.status}`);
+
                 if (!response.ok) {
-                    throw new Error('Error en la respuesta del servidor');
+                    const errorText = await response.text();
+                    console.error('❌ Error response:', errorText);
+                    throw new Error(`Error HTTP ${response.status}: ${errorText}`);
                 }
 
-                data = await response.json();
+                const rawData = await response.json();
+                console.log('✅ Respuesta RAW de n8n:', rawData);
+                addLog(`📦 Datos recibidos, procesando formato...`);
+
+                // Normalizar la respuesta de n8n (puede venir en diferentes formatos)
+                // n8n a veces devuelve { message: "..." } o { output: "..." } o datos directos
+                if (rawData.type && rawData.summary) {
+                    // Formato esperado directamente
+                    data = rawData;
+                } else if (rawData.output) {
+                    // n8n devuelve en campo output
+                    data = typeof rawData.output === 'string'
+                        ? { type: 'Business', summary: rawData.output, extractedData: {}, timeSaved: 'N/A' }
+                        : rawData.output;
+                } else if (rawData.message) {
+                    // n8n devuelve mensaje simple
+                    data = { type: 'Info', summary: rawData.message, extractedData: {}, timeSaved: 'N/A' };
+                } else if (rawData.summary || rawData.resumen || rawData.result || rawData.data) {
+                    // Otros formatos comunes
+                    data = {
+                        type: rawData.type || rawData.tipo || 'Business',
+                        summary: rawData.summary || rawData.resumen || rawData.result || JSON.stringify(rawData.data),
+                        extractedData: rawData.extractedData || rawData.datos || {},
+                        timeSaved: rawData.timeSaved || 'Calculado'
+                    };
+                } else {
+                    // Si es un objeto, intentar mostrar todo como resumen
+                    console.log('⚠️ Formato no reconocido, usando respuesta completa');
+                    data = {
+                        type: 'Respuesta n8n',
+                        summary: JSON.stringify(rawData, null, 2),
+                        extractedData: rawData,
+                        timeSaved: 'N/A'
+                    };
+                }
+
+                console.log('✅ Data normalizada:', data);
             } else {
                 // MODO DEMO: Simulación sin n8n
                 await new Promise(r => setTimeout(r, 2500));
@@ -149,16 +219,28 @@ const WebScraperService = () => {
             addLog(`✅ Respuesta recibida de IA.`);
             addLog(`🧠 Estructurando datos...`);
 
-            // Actualizar resultado
+            // Calcular tiempo de ahorro estimado basado en la longitud del contenido
+            const calculateTimeSaved = (summary) => {
+                if (!summary) return '~2 min';
+                const length = summary.length;
+                if (length > 1000) return '~8-10 min';
+                if (length > 500) return '~5-7 min';
+                if (length > 200) return '~3-5 min';
+                return '~2-3 min';
+            };
+
+            // Actualizar resultado con datos y respuesta raw
             setResults(prev => prev.map(res => {
                 if (res.id === tempId) {
+                    const estimatedTime = data.timeSaved || calculateTimeSaved(data.summary);
                     return {
                         ...res,
                         status: 'completed',
-                        type: data.type,
-                        summary: data.summary,
-                        extractedData: data.extractedData,
-                        timeSaved: data.timeSaved
+                        type: data.type || 'Info',
+                        summary: data.summary || 'Sin resumen disponible',
+                        extractedData: data.extractedData || {},
+                        timeSaved: estimatedTime,
+                        rawResponse: data // Guardar respuesta completa para el modal
                     };
                 }
                 return res;
@@ -296,31 +378,6 @@ const WebScraperService = () => {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <label className="block text-xs font-medium text-slate-400 mb-2 uppercase tracking-wider">
-                                        Formato de Salida
-                                    </label>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        {[
-                                            { id: 'dashboard', icon: Layout, label: 'Dash' },
-                                            { id: 'pdf', icon: FileText, label: 'PDF' },
-                                            { id: 'link', icon: LinkIcon, label: 'Link' }
-                                        ].map((format) => (
-                                            <button
-                                                key={format.id}
-                                                onClick={() => setOutputFormat(format.id)}
-                                                className={`p-2 rounded-lg border text-xs flex flex-col items-center gap-1 transition-all ${outputFormat === format.id
-                                                        ? 'bg-purple-500/10 border-purple-500 text-purple-300'
-                                                        : 'border-slate-800 hover:border-slate-700 text-slate-500'
-                                                    }`}
-                                            >
-                                                <format.icon className="w-4 h-4" />
-                                                {format.label}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-
                                 {userCredits <= 0 ? (
                                     <Link
                                         to="/precios"
@@ -336,8 +393,8 @@ const WebScraperService = () => {
                                         whileHover={{ scale: 1.02 }}
                                         whileTap={{ scale: 0.98 }}
                                         className={`w-full py-4 rounded-xl font-bold text-sm uppercase tracking-wide flex items-center justify-center gap-2 transition-all shadow-lg ${isScanning
-                                                ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                                                : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/30'
+                                            ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                            : 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-purple-900/30'
                                             }`}
                                     >
                                         {isScanning ? (
@@ -378,8 +435,25 @@ const WebScraperService = () => {
                             <h2 className="text-lg font-bold flex items-center gap-2">
                                 <Database className="w-5 h-5 text-pink-500" /> Live Feed
                             </h2>
-                            <div className="text-xs text-slate-500 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
-                                Total Sesión: <span className="text-purple-400 font-bold">{results.length}</span>
+                            <div className="flex items-center gap-3">
+                                {results.length > 0 && (
+                                    <button
+                                        onClick={() => {
+                                            if (window.confirm('¿Limpiar todo el historial de resultados?')) {
+                                                setResults([]);
+                                                sessionStorage.removeItem('scraperResults');
+                                                addLog('🗑️ Historial limpiado');
+                                            }
+                                        }}
+                                        className="flex items-center gap-1 text-xs text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg border border-red-500/30 transition-all"
+                                    >
+                                        <Trash2 className="w-3 h-3" />
+                                        Limpiar
+                                    </button>
+                                )}
+                                <div className="text-xs text-slate-500 bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+                                    Total Sesión: <span className="text-purple-400 font-bold">{results.length}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -459,7 +533,86 @@ const WebScraperService = () => {
                                                         <span className="text-emerald-400">{res.extractedData.sentiment}</span>
                                                     </div>
                                                     <div className="flex-grow"></div>
-                                                    <button className="text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors">
+                                                    <button
+                                                        onClick={async () => {
+                                                            if (!PDF_WEBHOOK_URL) {
+                                                                alert('📄 Configura VITE_PDF_WEBHOOK_URL en tu .env para habilitar la descarga de PDF');
+                                                                return;
+                                                            }
+
+                                                            addLog(`📄 Generando PDF para ${res.url}...`);
+
+                                                            try {
+                                                                const response = await fetch(PDF_WEBHOOK_URL, {
+                                                                    method: 'POST',
+                                                                    headers: { 'Content-Type': 'application/json' },
+                                                                    body: JSON.stringify({
+                                                                        url: res.url,
+                                                                        type: res.type,
+                                                                        summary: res.summary,
+                                                                        extractedData: res.extractedData,
+                                                                        timeSaved: res.timeSaved,
+                                                                        generatedAt: new Date().toISOString()
+                                                                    })
+                                                                });
+
+                                                                const responseText = await response.text();
+                                                                console.log('📄 Respuesta RAW de n8n:', responseText);
+
+                                                                // Intentar parsear como JSON, si falla tratar como texto/URL
+                                                                let data;
+                                                                try {
+                                                                    data = JSON.parse(responseText);
+                                                                } catch {
+                                                                    data = responseText.trim();
+                                                                }
+
+                                                                // Si la respuesta es una URL directa (string)
+                                                                if (typeof data === 'string' && data.startsWith('http')) {
+                                                                    window.open(data, '_blank');
+                                                                    addLog(`✅ PDF abierto: ${data.substring(0, 50)}...`);
+                                                                    return;
+                                                                }
+
+                                                                // Soportar múltiples formatos de respuesta JSON
+                                                                const pdfData = data.pdf || data.base64 || data.file || data.data;
+                                                                const downloadUrl = data.downloadUrl || data.url || data.link || data.pdfUrl;
+                                                                const filename = data.filename || data.name || `reporte_${Date.now()}.pdf`;
+
+                                                                if (pdfData) {
+                                                                    // Descargar desde base64
+                                                                    const link = document.createElement('a');
+                                                                    link.href = `data:application/pdf;base64,${pdfData}`;
+                                                                    link.download = filename;
+                                                                    link.click();
+                                                                    addLog(`✅ PDF descargado: ${filename}`);
+                                                                } else if (downloadUrl) {
+                                                                    // Abrir URL de descarga
+                                                                    window.open(downloadUrl, '_blank');
+                                                                    addLog(`✅ PDF abierto en nueva pestaña`);
+                                                                } else {
+                                                                    // Mostrar qué recibimos
+                                                                    console.log('Respuesta completa:', data);
+                                                                    addLog(`⚠️ Respuesta recibida. Revisa consola.`);
+                                                                    alert(`n8n respondió pero no se detectó un PDF.\n\nRevisa la consola (F12).`);
+                                                                }
+                                                            } catch (error) {
+                                                                console.error('Error PDF:', error);
+                                                                addLog(`❌ Error al generar PDF: ${error.message}`);
+                                                                alert('Error al generar el PDF. Revisa la consola.');
+                                                            }
+                                                        }}
+                                                        className="text-emerald-400 hover:text-emerald-300 flex items-center gap-1 transition-colors"
+                                                    >
+                                                        <Download className="w-3 h-3" /> PDF
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            setSelectedResult(res);
+                                                            setShowModal(true);
+                                                        }}
+                                                        className="text-purple-400 hover:text-purple-300 flex items-center gap-1 transition-colors"
+                                                    >
                                                         Ver reporte completo <ChevronRight className="w-3 h-3" />
                                                     </button>
                                                 </div>
@@ -471,6 +624,68 @@ const WebScraperService = () => {
                         </div>
                     </div>
                 </main>
+
+                {/* Modal de Reporte Completo */}
+                <AnimatePresence>
+                    {showModal && selectedResult && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+                            onClick={() => setShowModal(false)}
+                        >
+                            <motion.div
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                className="bg-slate-900 border border-white/10 rounded-2xl p-6 max-w-3xl w-full max-h-[80vh] overflow-y-auto"
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <div className="flex justify-between items-center mb-4">
+                                    <h3 className="text-xl font-bold text-white">📊 Reporte Completo</h3>
+                                    <button
+                                        onClick={() => setShowModal(false)}
+                                        className="text-slate-400 hover:text-white text-2xl"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div className="bg-slate-800/50 rounded-xl p-4">
+                                        <p className="text-xs text-slate-500 uppercase mb-1">URL Analizada</p>
+                                        <p className="text-white font-mono text-sm">{selectedResult.url}</p>
+                                    </div>
+
+                                    <div className="bg-slate-800/50 rounded-xl p-4">
+                                        <p className="text-xs text-slate-500 uppercase mb-1">Tipo Detectado</p>
+                                        <p className="text-purple-400 font-bold">{selectedResult.type}</p>
+                                    </div>
+
+                                    <div className="bg-slate-800/50 rounded-xl p-4">
+                                        <p className="text-xs text-slate-500 uppercase mb-1">Resumen IA</p>
+                                        <p className="text-slate-300">{selectedResult.summary}</p>
+                                    </div>
+
+                                    <div className="bg-slate-800/50 rounded-xl p-4">
+                                        <p className="text-xs text-slate-500 uppercase mb-2">Datos Extraídos</p>
+                                        <pre className="text-xs text-emerald-400 font-mono overflow-x-auto whitespace-pre-wrap">
+                                            {JSON.stringify(selectedResult.extractedData, null, 2)}
+                                        </pre>
+                                    </div>
+
+                                    <div className="bg-slate-950 rounded-xl p-4 border border-slate-700">
+                                        <p className="text-xs text-slate-500 uppercase mb-2">🔍 Respuesta RAW del Webhook (Debug)</p>
+                                        <pre className="text-xs text-amber-400 font-mono overflow-x-auto whitespace-pre-wrap max-h-64 overflow-y-auto">
+                                            {JSON.stringify(selectedResult.rawResponse, null, 2)}
+                                        </pre>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
 
                 {/* Estilos de animación */}
                 <style>{`

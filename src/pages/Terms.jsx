@@ -17,7 +17,7 @@ const TermsOfService = () => {
                         <p>Se concede permiso para descargar temporalmente una copia de los materiales (información o software) en el sitio web de N8NIA solo para visualización transitoria personal y no comercial.</p>
 
                         <h3>3. Exención de Responsabilidad</h3>
-                        <p>Los materiales en el sitio web de N8NIA se proporcionan "tal cual". N8NIA no ofrece garantías, expresas o implícitas, y por la presente renuncia y niega todas las demás garantías, incluidas, entre otras, las garantías implícitas o las condiciones de comerciabilidad, idoneidad para un propósito particular o no infracción de la propiedad intelectual u otra violación de derechos.</p>
+                        <p>Los materiales en el sitio web de N8NIA se proporcionan &quot;tal cual&quot;. N8NIA no ofrece garantías, expresas o implícitas, y por la presente renuncia y niega todas las demás garantías, incluidas, entre otras, las garantías implícitas o las condiciones de comerciabilidad, idoneidad para un propósito particular o no infracción de la propiedad intelectual u otra violación de derechos.</p>
 
                         <h3>4. Limitaciones</h3>
                         <p>En ningún caso N8NIA o sus proveedores serán responsables de ningún daño (incluidos, entre otros, daños por pérdida de datos o ganancias, o debido a la interrupción del negocio) que surjan del uso o la incapacidad de usar los materiales en el sitio web.</p>

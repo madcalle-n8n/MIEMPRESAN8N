@@ -1,6 +1,5 @@
 
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { ArrowLeft, CheckCircle, Zap, Play } from 'lucide-react';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import { servicesData } from '../data/services';

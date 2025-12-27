@@ -23,7 +23,7 @@ import { motion } from 'framer-motion';
 import {
     Check, Zap, Crown, Building2, Sparkles,
     CreditCard, ArrowRight, Star, Shield,
-    Infinity, Package
+    Infinity as InfinityIcon, Package
 } from 'lucide-react';
 import AnimatedPage from '../components/layout/AnimatedPage';
 import SEO from '../components/SEO';
@@ -83,6 +83,8 @@ const PricingPage = () => {
             description: 'Para grandes equipos',
             icon: Building2,
             color: 'amber',
+            // URL directa de Stripe Checkout (modo test)
+            stripeUrl: 'https://buy.stripe.com/test_7sYeVc3N586IgB0e471ZS01',
             features: [
                 'Análisis ilimitados',
                 'Todas las funciones Pro',
@@ -129,7 +131,13 @@ const PricingPage = () => {
         }
     ];
 
-    const handlePurchase = async (planId, type) => {
+    const handlePurchase = async (planId, type, stripeUrl = null) => {
+        // Si hay una URL directa de Stripe, redirigir inmediatamente
+        if (stripeUrl) {
+            window.location.href = stripeUrl;
+            return;
+        }
+
         if (!isAuthenticated) {
             window.location.href = '/#/login';
             return;
@@ -248,8 +256,8 @@ const PricingPage = () => {
                             <button
                                 onClick={() => setBillingType('subscription')}
                                 className={`px-6 py-3 rounded-lg font-medium text-sm transition-all ${billingType === 'subscription'
-                                        ? 'bg-purple-600 text-white shadow-lg'
-                                        : 'text-slate-400 hover:text-white'
+                                    ? 'bg-purple-600 text-white shadow-lg'
+                                    : 'text-slate-400 hover:text-white'
                                     }`}
                             >
                                 📅 Suscripción Mensual
@@ -257,8 +265,8 @@ const PricingPage = () => {
                             <button
                                 onClick={() => setBillingType('credits')}
                                 className={`px-6 py-3 rounded-lg font-medium text-sm transition-all ${billingType === 'credits'
-                                        ? 'bg-purple-600 text-white shadow-lg'
-                                        : 'text-slate-400 hover:text-white'
+                                    ? 'bg-purple-600 text-white shadow-lg'
+                                    : 'text-slate-400 hover:text-white'
                                     }`}
                             >
                                 💰 Packs de Créditos
@@ -271,7 +279,7 @@ const PricingPage = () => {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto"
+                            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto items-stretch"
                         >
                             {subscriptionPlans.map((plan, index) => {
                                 const colors = colorClasses[plan.color];
@@ -283,9 +291,9 @@ const PricingPage = () => {
                                         initial={{ opacity: 0, y: 20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: index * 0.1 }}
-                                        className={`relative bg-slate-900/50 border rounded-2xl p-6 ${plan.popular
-                                                ? 'border-purple-500/50 ring-2 ring-purple-500/20'
-                                                : 'border-white/10'
+                                        className={`relative bg-slate-900/50 border rounded-2xl p-6 flex flex-col ${plan.popular
+                                            ? 'border-purple-500/50 ring-2 ring-purple-500/20'
+                                            : 'border-white/10'
                                             }`}
                                     >
                                         {plan.popular && (
@@ -311,7 +319,7 @@ const PricingPage = () => {
                                         <div className="flex items-center gap-2 mb-6 text-sm">
                                             {plan.credits === -1 ? (
                                                 <span className={`${colors.text} font-medium flex items-center gap-1`}>
-                                                    <Infinity className="w-4 h-4" /> Análisis ilimitados
+                                                    <InfinityIcon className="w-4 h-4" /> Análisis ilimitados
                                                 </span>
                                             ) : (
                                                 <span className={`${colors.text} font-medium`}>
@@ -320,7 +328,8 @@ const PricingPage = () => {
                                             )}
                                         </div>
 
-                                        <ul className="space-y-3 mb-6">
+                                        {/* flex-grow para empujar el botón hacia abajo */}
+                                        <ul className="space-y-3 mb-6 flex-grow">
                                             {plan.features.map((feature, i) => (
                                                 <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
                                                     <Check className={`w-4 h-4 ${colors.text} flex-shrink-0 mt-0.5`} />
@@ -329,12 +338,13 @@ const PricingPage = () => {
                                             ))}
                                         </ul>
 
+                                        {/* Botón siempre al fondo */}
                                         <motion.button
                                             whileHover={{ scale: 1.02 }}
                                             whileTap={{ scale: 0.98 }}
-                                            onClick={() => handlePurchase(plan.id, 'subscription')}
+                                            onClick={() => handlePurchase(plan.id, 'subscription', plan.stripeUrl)}
                                             disabled={isProcessing}
-                                            className={`w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r ${colors.button} shadow-lg ${colors.shadow} flex items-center justify-center gap-2 transition-all`}
+                                            className={`w-full py-3 rounded-xl font-bold text-white bg-gradient-to-r ${colors.button} shadow-lg ${colors.shadow} flex items-center justify-center gap-2 transition-all mt-auto`}
                                         >
                                             {isProcessing ? (
                                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />

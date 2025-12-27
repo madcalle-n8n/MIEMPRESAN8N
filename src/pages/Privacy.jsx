@@ -11,7 +11,7 @@ const PrivacyPolicy = () => {
                         <p>Última actualización: {new Date().toLocaleDateString()}</p>
 
                         <h3>1. Introducción</h3>
-                        <p>En N8NIA (en adelante, "nosotros"), respetamos su privacidad y nos comprometemos a proteger sus datos personales. Esta política de privacidad le informará sobre cómo cuidamos sus datos personales cuando visita nuestro sitio web y le informará sobre sus derechos de privacidad.</p>
+                        <p>En N8NIA (en adelante, &quot;nosotros&quot;), respetamos su privacidad y nos comprometemos a proteger sus datos personales. Esta política de privacidad le informará sobre cómo cuidamos sus datos personales cuando visita nuestro sitio web y le informará sobre sus derechos de privacidad.</p>
 
                         <h3>2. Los datos que recopilamos</h3>
                         <p>Podemos recopilar, utilizar, almacenar y transferir diferentes tipos de datos personales sobre usted, que hemos agrupado de la siguiente manera:</p>
